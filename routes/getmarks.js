@@ -1,17 +1,14 @@
 var express = require('express');
 var router = express.Router();
-const puppeteer = require("puppeteer");
 
-const USERNameBox = "#txtUserid";
-const USERPassBox = "#txtpassword";
-const LoginValidator = "#btnLogin";
-const AcademicSection = "https://slcm.manipal.edu/Academics.aspx";
-const dataAttendance = "#tblAttendancePercentage";
-const homeURL = "https://slcm.manipal.edu/loginForm.aspx";
-
+let USERNameBox = "#txtUserid";
+let USERPassBox = "#txtpassword";
+let LoginValidator = "#btnLogin";
+let AcademicSection = "https://slcm.manipal.edu/Academics.aspx";
+let homeURL = "https://slcm.manipal.edu/loginForm.aspx";
+let sentMarksData = [];
 //function to login into the SLcM portal
 async function login(username, password) {
-    let loginSuccess = true;
     await newPage.click(USERNameBox);
     await newPage.keyboard.type(username);
     console.log("Reached Here: Entered Username");
@@ -26,7 +23,7 @@ async function login(username, password) {
     console.log("Reached Here: Reached Academic Section");
     await newPage.click("#sub-tabs-list > li:nth-child(6)");
     console.log("Reached Here: Reached Marks Section");
-    return "Login Successful";
+    return 0;
 }
 
 //function to get a list of all the subjects in the semester
@@ -42,7 +39,6 @@ async function getSubjects() {
 
 //function to get a score of all the scores in the semester
 async function getSubjectScore(SubjectArray) {
-    let subjectScoreArray = [];
     let iterateSubjects = 0;
     console.log(SubjectArray);
     let subjectScore = await newPage.evaluate(() => Array.from(document.querySelectorAll('#accordion1 > div:nth-child(2n+2) > div.panel-collapse > div.panel-body > div.table-responsive'), e => e.innerText));
@@ -102,7 +98,7 @@ async function getSubjectScore(SubjectArray) {
                 "assignment3": Assignment3,
                 "assignment4": Assignment4
             }
-            sentData.push(tempPushData);
+            sentMarksData.push(tempPushData);
         }
         else {
             console.log("This Subject is a lab");
@@ -120,34 +116,27 @@ async function getMarks(homeURL, username, password, semester) {
     await newPage.goto(homeURL);
     console.log("Reached Here: Reached the page");
     let loginStatus = await login(username, password);
-    console.log(loginStatus);
-    if (loginStatus == "Login Unsuccessful") {
-        return "UnsuccessFull Login";
-    }
-    else {
-        //get the list of subjects as an array in the variable SubjectArray
-        let SubjectArray = await getSubjects();
-        let subjectScoring = await getSubjectScore(SubjectArray);
-        console.log("Reached Here: File Write Complete");
-        await browser.close();
-        return "Finished Process";
-    }
+    //get the list of subjects as an array in the variable SubjectArray
+    let SubjectArray = await getSubjects();
+    let subjectScoring = await getSubjectScore(SubjectArray);
+    console.log("Reached Here: File Write Complete");
+    return "Finished Process";
 }
 
 
 
 router.get("/getscores", async function (req, res) {
-    console.log("Reached Here: Got Request");
+    console.log("Reached Here: Got Request for marks");
     let exitMessage = await getMarks(homeURL, req.query.username, req.query.password, req.query.semester);
     console.log(exitMessage);
-    res.send(sentData);
+    res.send(sentMarksData);
 });
 
 router.post("/getscores", async function (req, res) {
-    console.log("Reached Here: Got Request");
+    console.log("Reached Here: Got Request for marks");
     let exitMessage = await getMarks(homeURL, req.body.username, req.body.password, req.body.semester);
     console.log(exitMessage);
-    res.send(sentData);
+    res.send(sentMarksData);
 });
 
 
