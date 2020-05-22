@@ -147,7 +147,7 @@ $RECYCLE.BIN/
 
 # Developer defined unnecessary files
 *.txt
-package-lock.json/
+package-lock.json
 
 # End of .gitignore
 
