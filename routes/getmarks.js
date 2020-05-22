@@ -127,14 +127,14 @@ async function getMarks(homeURL, username, password, semester) {
 
 router.get("/getscores", async function (req, res) {
     console.log("Reached Here: Got Request for marks");
-    let exitMessage = await getMarks(homeURL, req.query.username, req.query.password, req.query.semester);
+    let exitMessage = await getMarks(req.query.username, req.query.password, req.query.semester);
     console.log(exitMessage);
     res.send(sentMarksData);
 });
 
 router.post("/getscores", async function (req, res) {
     console.log("Reached Here: Got Request for marks");
-    let exitMessage = await getMarks(homeURL, req.body.username, req.body.password, req.body.semester);
+    let exitMessage = await getMarks(req.body.username, req.body.password, req.body.semester);
     console.log(exitMessage);
     res.send(sentMarksData);
 });

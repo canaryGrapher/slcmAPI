@@ -1,5 +1,4 @@
 var express = require('express');
-const fs = require('fs');
 var router = express.Router();
 
 let USERNameBox = "#txtUserid";
@@ -28,7 +27,7 @@ async function login(username, password) {
     return 0;
 }
 
-async function getAttendance(homeURL, username, password, semester) {
+async function getAttendance(username, password, semester) {
     let arrayAttendance = [];
     await newPage.setDefaultNavigationTimeout(0);
     newPage.setViewport({ width: 1920, height: 1080 });
@@ -62,13 +61,13 @@ async function getAttendance(homeURL, username, password, semester) {
 
 router.get("/getattendance", async function (req, res) {
     console.log("Reached Here: Got Request for attendance");
-    let exitMessage = await getAttendance(homeURL, req.query.username, req.query.password);
+    let exitMessage = await getAttendance(req.query.username, req.query.password);
     res.send(sentAttendanceData);
 });
 
 router.post("/getattendance", async function (req, res) {
     console.log("Reached Here: Got Request for attendance");
-    let exitMessage = await getAttendance(homeURL, req.body.username, req.body.password);
+    let exitMessage = await getAttendance(req.body.username, req.body.password);
     res.send(sentAttendanceData);
 });
 
