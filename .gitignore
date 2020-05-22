@@ -145,7 +145,10 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-# End of https://www.gitignore.io/api/node,windows,visualstudiocode
-node_modules/
-*.txt/
+# Developer defined unnecessary files
+*.txt
 package-lock.json/
+
+# End of .gitignore
+
+
