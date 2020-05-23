@@ -51,8 +51,8 @@ router.get("/validateuser", async function (req, res) {
 
 router.post("/validateuser", async function (req, res) {
     console.log("Reached Here: Got Request for validation");
-    username = req.body.username;
-    password = req.body.password;
+    testUsername = req.body.username;
+    testPassword = req.body.password;
     let authorization = await validate(testUsername, testPassword);
     if (authorization == "loginSuccess") {
         console.log("Correct Credentials");
