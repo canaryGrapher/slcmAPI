@@ -27,48 +27,65 @@ async function login(username, password) {
     return 0;
 }
 
-async function getAttendance(username, password, semester) {
-    let arrayAttendance = [];
-    await newPage.setDefaultNavigationTimeout(0);
-    newPage.setViewport({ width: 1920, height: 1080 });
-    await newPage.goto(homeURL);
-    console.log("Reached Here: Reached the page");
-    let loginStatus = await login(username, password);
-    let tableContent = await newPage.evaluate(() => Array.from(document.querySelectorAll('#tblAttendancePercentage > tbody'), e => e.innerText));
-    let mixedWords = tableContent.toString().split("\n");
-    mixedWords.forEach(word => {
-        arrayAttendance.push(word.trim());
-        arrayAttendance.join("");
-    });
-    let patternRegEx = new RegExp("[0-9][0-9][0-9][0-9]\-[0-9][0-9][0-9][0-9]");
-    let iterateOverArray;
-    for (iterateOverArray = 0; iterateOverArray < arrayAttendance.length; iterateOverArray++) {
-        if (patternRegEx.test(arrayAttendance[iterateOverArray])) {
-            let tempPushData = {
-                "subject": arrayAttendance[iterateOverArray + 2],
-                "subjectCode": arrayAttendance[iterateOverArray + 1],
-                "totalClasses": arrayAttendance[iterateOverArray + 4],
-                "daysPresent": arrayAttendance[iterateOverArray + 5],
-                "daysAbsent": arrayAttendance[iterateOverArray + 6],
-                "attendancePercent": arrayAttendance[iterateOverArray + 7]
-            };
-            sentAttendanceData.push(tempPushData);
-        }
-    }
-    return 0;
-}
+async function getAttendance(username, password) {
+    try {
+        let arrayAttendance = [];
+        await newPage.setDefaultNavigationTimeout(0);
+        newPage.setViewport({ width: 1920, height: 1080 });
+        await newPage.goto(homeURL);
+        console.log("Reached Here: Reached the page");
+        let loginStatus = await login(username, password);
+        let tableContent = await newPage.evaluate(() => Array.from(document.querySelectorAll('#tblAttendancePercentage > tbody'), e => e.innerText));
+        let mixedWords = tableContent.toString().split("\n");
+        mixedWords.forEach(word => {
+            arrayAttendance.push(word.trim());
+            arrayAttendance.join("");
+        });
+        let patternRegEx = new RegExp("[0-9][0-9][0-9][0-9]\-[0-9][0-9][0-9][0-9]");
+        let iterateOverArray;
+        for (iterateOverArray = 0; iterateOverArray < arrayAttendance.length; iterateOverArray++) {
+            if (patternRegEx.test(arrayAttendance[iterateOverArray])) {
+                let tempPushData = {
+                    "subject": arrayAttendance[iterateOverArray + 2],
+                    "subjectCode": arrayAttendance[iterateOverArray + 1],
+                    "totalClasses": arrayAttendance[iterateOverArray + 4],
+                    "daysPresent": arrayAttendance[iterateOverArray + 5],
+                    "daysAbsent": arrayAttendance[iterateOverArray + 6],
+                    "attendancePercent": arrayAttendance[iterateOverArray + 7]
+                };
+                sentAttendanceData.push(tempPushData);
 
+            }
+        }
+        return ["requestSuccess", "The request was completed successfully"];
+    }
+    catch (errorServer) {
+        console.log(errorServer);
+        console.log("There is an error");
+        return ["serverError", "Either username/password combo is wrong, or SLcM is facing issues."];
+    }
+}
 
 router.get("/getattendance", async function (req, res) {
     console.log("Reached Here: Got Request for attendance");
     let exitMessage = await getAttendance(req.query.username, req.query.password);
-    res.send(sentAttendanceData);
+    if (exitMessage[0] == "serverError") {
+        res.send(exitMessage[1]);
+    }
+    else {
+        res.send(sentAttendanceData);
+    }
 });
 
 router.post("/getattendance", async function (req, res) {
     console.log("Reached Here: Got Request for attendance");
     let exitMessage = await getAttendance(req.body.username, req.body.password);
-    res.send(sentAttendanceData);
+    if (exitMessage[0] == "serverError") {
+        res.send(exitMessage[1]);
+    }
+    else {
+        res.send(sentAttendanceData);
+    }
 });
 
 module.exports = router;
