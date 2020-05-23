@@ -1,6 +1,6 @@
 {
     "name": "slcmscraper",
-    "version": "1.0.0",
+    "version": "1.4.2",
     "description": "The web scraping API for SLcM Manipal for your attendance and marks",
     "main": "server.js",
     "scripts": {
