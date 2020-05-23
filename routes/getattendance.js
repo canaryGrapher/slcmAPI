@@ -1,4 +1,5 @@
 var express = require('express');
+const axios = require('axios');
 var router = express.Router();
 
 let USERNameBox = "#txtUserid";
@@ -30,11 +31,11 @@ async function login(username, password) {
 async function getAttendance(username, password) {
     try {
         let arrayAttendance = [];
-        await newPage.setDefaultNavigationTimeout(0);
+        await newPage.setDefaultNavigationTimeout(10000);
         newPage.setViewport({ width: 1920, height: 1080 });
         await newPage.goto(homeURL);
         console.log("Reached Here: Reached the page");
-        let loginStatus = await login(username, password);
+        await login(username, password);
         let tableContent = await newPage.evaluate(() => Array.from(document.querySelectorAll('#tblAttendancePercentage > tbody'), e => e.innerText));
         let mixedWords = tableContent.toString().split("\n");
         mixedWords.forEach(word => {
@@ -62,29 +63,78 @@ async function getAttendance(username, password) {
     catch (errorServer) {
         console.log(errorServer);
         console.log("There is an error");
-        return ["serverError", "Either username/password combo is wrong, or SLcM is facing issues."];
+        return ["serverError", "ERROR: It is either us, or SLcM is being a bitch. No hard feelings."];
     }
 }
 
 router.get("/getattendance", async function (req, res) {
     console.log("Reached Here: Got Request for attendance");
-    let exitMessage = await getAttendance(req.query.username, req.query.password);
-    if (exitMessage[0] == "serverError") {
-        res.send(exitMessage[1]);
+    if (req.query.novalidate == "true") {
+        let exitMessage = await getAttendance(req.query.username, req.query.password);
+        if (exitMessage[0] == "serverError") {
+            res.send(exitMessage[1]);
+        }
+        else {
+            res.send(sentAttendanceData);
+        }
     }
-    else {
-        res.send(sentAttendanceData);
+    else if (req.query.novalidate == "false") {
+        axios.get(`http://localhost:${PORT}/validateuser?username=${req.query.username}&password=${req.query.password}`).then(async response => {
+            let testCredentials = response.data;
+            if (testCredentials.credentialsValid == true) {
+                console.log("Login SuccessFull");
+                let exitMessage = await getAttendance(req.query.username, req.query.password);
+                if (exitMessage[0] == "serverError") {
+                    res.send(exitMessage[1]);
+                }
+                else {
+                    res.send(sentAttendanceData);
+                }
+            }
+            else {
+                console.log("Login Unsuccessful");
+                res.send("Invalid Credentials were provided");
+            }
+        }).catch(error => {
+            console.log(error);
+            res.send("There is a problem with the server. Please try again after some time");
+        });
     }
+
 });
 
 router.post("/getattendance", async function (req, res) {
     console.log("Reached Here: Got Request for attendance");
-    let exitMessage = await getAttendance(req.body.username, req.body.password);
-    if (exitMessage[0] == "serverError") {
-        res.send(exitMessage[1]);
+    if (req.body.novalidate == "true") {
+        let exitMessage = await getAttendance(req.body.username, req.body.password);
+        if (exitMessage[0] == "serverError") {
+            res.send(exitMessage[1]);
+        }
+        else {
+            res.send(sentAttendanceData);
+        }
     }
-    else {
-        res.send(sentAttendanceData);
+    else if (req.body.novalidate == "false") {
+        axios.get(`http://localhost:${PORT}/validateuser?username=${req.body.username}&password=${req.body.password}`).then(async response => {
+            let testCredentials = response.data;
+            if (testCredentials.credentialsValid == true) {
+                console.log("Login SuccessFull");
+                let exitMessage = await getAttendance(req.body.username, req.body.password);
+                if (exitMessage[0] == "serverError") {
+                    res.send(exitMessage[1]);
+                }
+                else {
+                    res.send(sentAttendanceData);
+                }
+            }
+            else {
+                console.log("Login Unsuccessful");
+                res.send("Invalid Credentials were provided");
+            }
+        }).catch(error => {
+            console.log(error);
+            res.send("There is a problem with the server. Please try again after some time");
+        });
     }
 });
 
