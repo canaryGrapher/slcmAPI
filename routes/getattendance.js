@@ -78,7 +78,7 @@ router.get("/getattendance", async function (req, res) {
             res.send(sentAttendanceData);
         }
     }
-    else if (req.query.novalidate == "false") {
+    else if (req.query.novalidate == "false" || req.query.novalidate == null) {
         axios.get(`http://localhost:${PORT}/validateuser?username=${req.query.username}&password=${req.query.password}`).then(async response => {
             let testCredentials = response.data;
             if (testCredentials.credentialsValid == true) {
@@ -93,14 +93,17 @@ router.get("/getattendance", async function (req, res) {
             }
             else {
                 console.log("Login Unsuccessful");
-                res.send("Invalid Credentials were provided");
+                res.send("Invalid URL was provided");
             }
         }).catch(error => {
             console.log(error);
             res.send("There is a problem with the server. Please try again after some time");
         });
     }
-
+    else {
+        console.log("Invalid request format was sent");
+        res.send("Invalid URL format. Read the documentations.");
+    }
 });
 
 router.post("/getattendance", async function (req, res) {
@@ -114,7 +117,7 @@ router.post("/getattendance", async function (req, res) {
             res.send(sentAttendanceData);
         }
     }
-    else if (req.body.novalidate == "false") {
+    else if (req.body.novalidate == "false" || req.body.novalidate == null) {
         axios.get(`http://localhost:${PORT}/validateuser?username=${req.body.username}&password=${req.body.password}`).then(async response => {
             let testCredentials = response.data;
             if (testCredentials.credentialsValid == true) {
@@ -129,12 +132,16 @@ router.post("/getattendance", async function (req, res) {
             }
             else {
                 console.log("Login Unsuccessful");
-                res.send("Invalid Credentials were provided");
+                res.send("Invalid URL was provided");
             }
         }).catch(error => {
             console.log(error);
             res.send("There is a problem with the server. Please try again after some time");
         });
+    }
+    else {
+        console.log("Invalid request format was sent");
+        res.send("Invalid URL format. Read the documentations.");
     }
 });
 

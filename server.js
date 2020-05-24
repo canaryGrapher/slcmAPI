@@ -25,6 +25,11 @@ app.all("/getprofile", getProfile);
 //for gettting user credentials validations
 app.all("/validateuser", validateUSER);
 
+//for all other requests
+app.get("*", function (req, res) {
+    console.log("Invalid request format was sent");
+    res.send("Invalid URL format. Read the documentations.");
+});
 
 app.listen(PORT, async function () {
     console.log("The server is now listening on port", PORT);
