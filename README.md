@@ -18,7 +18,7 @@ Welcome to slcmAPI - the Open-Sourced REST-API for Manipal University's Student 
 
 
 ## **Need help running it?**
-Go to our [Wiki](https://github.com/var-greyShader/slcmAPI/wiki) pages to find all information about the project. Use [this](https://github.com/var-greyShader/slcmAPI/wiki/Testing) to set up the local server and use [this](https://github.com/var-greyShader/slcmAPI/wiki/Sending-Requests) to learn how to make requests.
+Go to the [Wiki](https://github.com/var-greyShader/slcmAPI/wiki) pages to find all information about the project. Use [this](https://github.com/var-greyShader/slcmAPI/wiki/Testing) to set up the local server and use [this](https://github.com/var-greyShader/slcmAPI/wiki/Sending-Requests) to learn how to make requests.
 
 ## **Questions?**
 Go to our [FAQs](https://github.com/var-greyShader/slcmAPI/wiki/FAQs) to see if it is already there, or you can email the developer [here](mailto:yash.aryan@aol.com?subject=Regarding%20slcmAPI).
