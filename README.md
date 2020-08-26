@@ -1,3 +1,5 @@
+(This is now deprecated because the login portal now has a CAPTCHA)
+
 #  slcmAPI
 <p align="center">
 <img width="350" height="250" alt="MAHE Logo" src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTOOKQhFDKER-gCdgz4bUoNbrKJyG5uUBuKdeKjLCs3zqFePt0G&usqp=CAUg">
