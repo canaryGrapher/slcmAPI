@@ -1,5 +1,4 @@
-[![deprecated](http://badges.github.io/stability-badges/dist/deprecated.svg)](http://github.com/badges/stability-badges)
-
+[![deprecated](http://badges.github.io/stability-badges/dist/deprecated.svg)](http://github.com/badges/stability-badges) <br/>
 This is deprecated since the login portal introduced CAPTCHA for the login process.
 
 #  slcmAPI
